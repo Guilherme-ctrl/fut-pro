@@ -12,7 +12,7 @@ export function AthleteNav() {
   return (
     <header className="athlete-nav">
       <NavLink to="/athlete/home" className="athlete-nav__brand" end>
-        Personal <span className="text-accent">Futebol</span>
+        fut<span className="text-accent">Pro</span>
       </NavLink>
       <nav className="athlete-nav__links" aria-label="Navegação do atleta">
         <NavLink to="/athlete/home" end>

@@ -3,7 +3,7 @@
 
 services:
   - type: web
-    name: personal-futebol-api
+    name: futpro-api
     runtime: node
     plan: free
     region: oregon

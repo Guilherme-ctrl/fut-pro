@@ -13,7 +13,7 @@ export function PersonalNav() {
     <header className="personal-nav">
       <div className="personal-nav__inner">
         <NavLink to="/dashboard" className="personal-nav__brand" end>
-          Personal <span>Futebol</span>
+          fut<span>Pro</span>
         </NavLink>
         <nav
           className="personal-nav__links"

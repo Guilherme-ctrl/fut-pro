@@ -1,4 +1,4 @@
-# Personal Futebol — MVP (Prescrição guiada com aderência)
+# futPro — MVP (Prescrição guiada com aderência)
 
 Monorepo do MVP descrito em `/Docs`: especificações (SDD), API NestJS + Prisma, app Vite/React e PostgreSQL via Docker.
 
@@ -84,7 +84,7 @@ Fluxo demonstrável (alinhado a `Docs/01-mvp-scope.md`):
 
 | Problema | O que verificar |
 |----------|------------------|
-| Erro de conexão com o banco | `docker compose ps`, `DATABASE_URL` com usuário `pf`, DB `personal_futebol`, porta `5432`. |
+| Erro de conexão com o banco | `docker compose ps`, `DATABASE_URL` com usuário `pf`, DB `futpro`, porta `5432`. |
 | `401` em todas as rotas | `JWT_SECRET` definido; reinicie o backend após alterar `.env`. |
 | Frontend não chama a API | Backend na porta 3333; `npm run dev` do Vite usa o proxy de `/api`. |
 | Conflito ao prescrever | Já existe prescrição `ACTIVE` para o atleta — pause/conclua a atual ou use outro atleta. |
@@ -111,7 +111,7 @@ Fluxo demonstrável (alinhado a `Docs/01-mvp-scope.md`):
    - `JWT_SECRET` — string longa e aleatória.
    - `JWT_EXPIRES_DAYS` — opcional (padrão do app: `7`).
    - `CORS_ORIGIN` — URL do front na Vercel, **sem barra no final** (ex.: `https://seu-app.vercel.app`). Várias origens: separe por vírgula (útil se você tiver mais de um domínio). Deploys de **preview** da Vercel têm URL própria — inclua essa URL em `CORS_ORIGIN` se for testar contra a API de produção, ou teste só pelo domínio de produção.
-6. Aguarde o deploy e anote a URL pública (ex.: `https://personal-futebol-api.onrender.com`).
+6. Aguarde o deploy e anote a URL pública (ex.: `https://futpro-api.onrender.com`).
 
 Opcional: na raiz do repo existe [`render.yaml`](render.yaml) para criar o serviço via **Blueprint** (ainda é preciso configurar variáveis secretas no painel).
 
@@ -122,7 +122,7 @@ Opcional: na raiz do repo existe [`render.yaml`](render.yaml) para criar o servi
 1. Importe o repo em [Vercel](https://vercel.com).
 2. **Root Directory**: `frontend`.
 3. **Environment Variables**:
-   - `VITE_API_URL` — URL pública da API no Render, **sem barra no final** (ex.: `https://personal-futebol-api.onrender.com`).
+   - `VITE_API_URL` — URL pública da API no Render, **sem barra no final** (ex.: `https://futpro-api.onrender.com`).
 4. Deploy. O [`frontend/vercel.json`](frontend/vercel.json) redireciona rotas do React Router para `index.html`.
 
 Depois do primeiro deploy do front, confira se `CORS_ORIGIN` no Render inclui exatamente a URL do site Vercel que o navegador usa (incluindo `https`).

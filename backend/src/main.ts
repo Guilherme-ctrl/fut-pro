@@ -36,7 +36,7 @@ async function bootstrap() {
   app.getHttpAdapter().get('/', (_req, res) => {
     res.status(200).json({
       ok: true,
-      service: 'personal-futebol-api',
+      service: 'futpro-api',
       apiBase: '/api',
       hint: 'O frontend roda em http://localhost:5173. Ex.: POST /api/auth/login',
     });

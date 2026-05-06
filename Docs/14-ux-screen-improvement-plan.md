@@ -1,4 +1,4 @@
-# Plano de melhoria de UX por tela — Personal Futebol (MVP)
+# Plano de melhoria de UX por tela — futPro (MVP)
 
 Este plano deriva do [guia de marca e design system](./13-design-system-brand-guide.md) e mapeia **cada rota atual** do frontend (`frontend/src/App.tsx`) para melhorias **concretas** de layout, componentes e comportamento.
 

@@ -4,7 +4,7 @@ export function Welcome() {
   return (
     <div className="welcome">
       <div className="welcome__card">
-        <p className="welcome__brand">Personal Futebol</p>
+        <p className="welcome__brand">futPro</p>
         <h1 className="welcome__title">Prescrição guiada com aderência</h1>
         <p className="welcome__lead">
           Uma experiência para o treinador prescrever e acompanhar — e para o

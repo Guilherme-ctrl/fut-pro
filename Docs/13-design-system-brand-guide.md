@@ -1,4 +1,4 @@
-# Guia de marca, design system e UX — Personal Futebol (MVP)
+# Guia de marca, design system e UX — futPro (MVP)
 
 Documento de referência para alinhar **identidade**, **componentes** e **comportamentos** ao contexto do produto ([00-product-overview](./00-product-overview.md), [01-mvp-scope](./01-mvp-scope.md)). Serve de base para o [plano por tela](./14-ux-screen-improvement-plan.md).
 
@@ -61,7 +61,7 @@ Comparação focada em **padrões de UX** úteis ao MVP, não em copiar features
   - **O que observar:** consistência de cores para sucesso/atenção/erro; histórico escaneável por data.  
   - **Lição:** alertas de dor/atraso devem ser **visíveis sem pânico visual** (severidade graduada).
 
-### 2.4 Posicionamento desejado para Personal Futebol
+### 2.4 Posicionamento desejado para futPro
 
 - **Evitar:** estética “terminal/hacker” ou **verde neon em excesso** como cor primária global — associa a jogos e reduz **confiança percebida** em contexto clínico-desportivo.  
 - **Buscar:** identidade **esportiva premium + operacional** (como um “painel de staff técnico” + “modo jogo” para o atleta), com contraste forte para uso ao ar livre mas sem sacrificar legibilidade.
@@ -82,7 +82,7 @@ Comparação focada em **padrões de UX** úteis ao MVP, não em copiar features
 
 ### 4.1 Direção de marca (proposta)
 
-- **Nome / conceito:** “Personal Futebol” — conota **preparação**, **período**, **equipe técnica**.  
+- **Nome / conceito:** “futPro” — conota **preparação**, **período**, **equipe técnica**.  
 - **Personalidade:** direta, técnica, motivadora sem infantilizar.  
 - **Tom de voz (UI):** frases curtas; verbos de ação (“Iniciar treino”, “Prescrever”, “Ver aderência”).
 

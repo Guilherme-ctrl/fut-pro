@@ -5,7 +5,7 @@
 Monorepo leve com dois pacotes na raiz:
 
 ```
-personal-futebol-mvp/
+futpro-mvp/
   Docs/
   backend/          # NestJS + Prisma
   frontend/         # Vite + React + TypeScript
@@ -69,7 +69,7 @@ backend/
 ## Variáveis de ambiente (exemplo)
 
 ```
-DATABASE_URL=postgresql://user:pass@localhost:5432/personal_futebol
+DATABASE_URL=postgresql://user:pass@localhost:5432/futpro
 JWT_SECRET=change-me
 JWT_EXPIRES_IN=7d
 PORT=3333
