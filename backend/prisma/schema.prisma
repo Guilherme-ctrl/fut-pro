@@ -1,0 +1,267 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PERSONAL
+  ATHLETE
+}
+
+enum TrainingType {
+  INTERVALADO
+  HIIT
+  CORRIDA_RESISTIDA
+  AGILIDADE
+  MOBILIDADE_CORE
+  HIIT_MUSCULAR
+  VELOCIDADE
+  OUTRO
+}
+
+enum ExecutionType {
+  SERIES_REPS
+  TIME_BASED
+  DISTANCE_BASED
+  CIRCUIT
+  INTERVAL
+  FREE_INSTRUCTIONS
+}
+
+enum PrescriptionStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum ExecutionStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  SKIPPED
+}
+
+enum Difficulty {
+  EASY
+  MODERATE
+  HARD
+  VERY_HARD
+}
+
+enum AthleteStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum AlertType {
+  PAIN
+  VERY_HARD
+  OVERLOAD
+  BEHIND_SCHEDULE
+  STOPPED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         UserRole
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  athletesAsPersonal Athlete[] @relation("PersonalAthletes")
+  athleteProfile     Athlete?  @relation("AthleteUser")
+  exercises       Exercise[]
+  protocols       Protocol[]
+}
+
+model Athlete {
+  id         String        @id @default(cuid())
+  personalId String
+  personal   User          @relation("PersonalAthletes", fields: [personalId], references: [id], onDelete: Cascade)
+  userId     String?       @unique
+  user       User?         @relation("AthleteUser", fields: [userId], references: [id], onDelete: SetNull)
+  name       String
+  email      String
+  phone      String?
+  age        Int?
+  position   String?
+  objective  String?
+  notes      String?
+  status     AthleteStatus @default(ACTIVE)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  prescriptions      Prescription[]
+  trainingExecutions TrainingExecution[]
+  alerts             Alert[]
+
+  @@unique([personalId, email])
+  @@index([personalId])
+}
+
+model Exercise {
+  id                      String   @id @default(cuid())
+  personalId              String
+  personal                User     @relation(fields: [personalId], references: [id], onDelete: Cascade)
+  name                    String
+  description             String?
+  videoUrl                String?
+  category                String?
+  equipment               String?
+  technicalNotes          String?
+  alternativeInstructions String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  trainingExercises TrainingExercise[]
+
+  @@index([personalId])
+}
+
+model Protocol {
+  id            String   @id @default(cuid())
+  personalId    String
+  personal      User     @relation(fields: [personalId], references: [id], onDelete: Cascade)
+  name          String
+  description   String?
+  objective     String?
+  trainingCount Int      @default(0)
+  cycleCount    Int      @default(1)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  trainingSessions TrainingSession[]
+  prescriptions    Prescription[]
+
+  @@index([personalId])
+}
+
+model TrainingSession {
+  id                       String       @id @default(cuid())
+  protocolId               String
+  protocol                 Protocol     @relation(fields: [protocolId], references: [id], onDelete: Cascade)
+  order                    Int
+  name                     String
+  type                     TrainingType @default(OUTRO)
+  description              String?
+  estimatedDurationMinutes Int?
+  generalInstructions      String?
+  createdAt                DateTime     @default(now())
+  updatedAt                DateTime     @updatedAt
+
+  trainingExercises  TrainingExercise[]
+  trainingExecutions TrainingExecution[]
+
+  @@unique([protocolId, order])
+  @@index([protocolId])
+}
+
+model TrainingExercise {
+  id               String         @id @default(cuid())
+  trainingSessionId String
+  trainingSession  TrainingSession @relation(fields: [trainingSessionId], references: [id], onDelete: Cascade)
+  exerciseId       String
+  exercise         Exercise       @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  order            Int
+  sets             Int?
+  repetitions      Int?
+  durationSeconds  Int?
+  distanceMeters   Int?
+  restSeconds      Int?
+  rounds           Int?
+  executionType    ExecutionType  @default(SERIES_REPS)
+  notes            String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  executionSteps TrainingExecutionStep[]
+
+  @@unique([trainingSessionId, order])
+  @@index([exerciseId])
+}
+
+model Prescription {
+  id                   String             @id @default(cuid())
+  athleteId            String
+  athlete              Athlete            @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  protocolId           String
+  protocol             Protocol           @relation(fields: [protocolId], references: [id], onDelete: Cascade)
+  startDate            DateTime
+  weeklyFrequency      Int
+  currentCycle         Int                @default(1)
+  currentTrainingOrder Int                @default(1)
+  status               PrescriptionStatus @default(ACTIVE)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  executions TrainingExecution[]
+  alerts     Alert[]
+
+  @@index([athleteId, status])
+  @@index([protocolId])
+}
+
+model TrainingExecution {
+  id                  String           @id @default(cuid())
+  prescriptionId      String
+  prescription        Prescription     @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+  trainingSessionId   String
+  trainingSession     TrainingSession  @relation(fields: [trainingSessionId], references: [id], onDelete: Cascade)
+  athleteId           String
+  athlete             Athlete          @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  startedAt           DateTime         @default(now())
+  finishedAt          DateTime?
+  status              ExecutionStatus  @default(IN_PROGRESS)
+  perceivedDifficulty Difficulty?
+  feltPain            Boolean?
+  painLocation        String?
+  athleteNotes        String?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  steps  TrainingExecutionStep[]
+  alerts Alert[]
+
+  @@index([athleteId])
+  @@index([prescriptionId])
+}
+
+model TrainingExecutionStep {
+  id                  String           @id @default(cuid())
+  trainingExecutionId String
+  trainingExecution   TrainingExecution @relation(fields: [trainingExecutionId], references: [id], onDelete: Cascade)
+  trainingExerciseId  String
+  trainingExercise    TrainingExercise  @relation(fields: [trainingExerciseId], references: [id], onDelete: Cascade)
+  status              ExecutionStatus  @default(NOT_STARTED)
+  startedAt           DateTime?
+  finishedAt          DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  @@index([trainingExecutionId])
+}
+
+model Alert {
+  id                  String             @id @default(cuid())
+  athleteId           String
+  athlete             Athlete            @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  prescriptionId      String?
+  prescription        Prescription?      @relation(fields: [prescriptionId], references: [id], onDelete: SetNull)
+  trainingExecutionId String?
+  trainingExecution   TrainingExecution? @relation(fields: [trainingExecutionId], references: [id], onDelete: SetNull)
+  type                AlertType
+  message             String
+  isRead              Boolean            @default(false)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  @@index([athleteId])
+}
