@@ -101,9 +101,11 @@ Fluxo demonstrável (alinhado a `Docs/01-mvp-scope.md`):
 ### Backend (Render — Web Service)
 
 1. **New → Web Service**, conecte o repositório Git.
-2. **Root Directory**: `backend`.
-3. **Build Command**: `npm install && npx prisma generate && npx prisma migrate deploy && npm run build`
-4. **Start Command**: `npm run start:prod`
+2. **Root Directory**: exatamente `backend` (pasta que contém o `package.json` da API). **Não** use `src/backend` — se o log mostrar `Cannot find module '.../src/backend/dist/main'`, o diretório raiz do serviço está errado ou o build não gerou `dist/`.
+3. **Build Command**: `npm install --include=dev && rm -rf dist tsconfig.build.tsbuildinfo && npx prisma generate && npx prisma migrate deploy && npm run build`  
+   O `rm -rf dist …` evita deploy sem ficheiros quando o cache incremental do TypeScript acha que não há nada a emitir.  
+   O `--include=dev` evita falha do `nest build` quando existe `NODE_ENV=production` no ambiente (sem isso o npm pode omitir `@nestjs/cli` e o `dist/` nunca é criado).
+4. **Start Command**: `npm run start:prod` (equivale a `node dist/main.js` dentro da pasta `backend`). Não use caminho absoluto tipo `/opt/render/project/...`.
 5. **Environment** (exemplos):
    - `DATABASE_URL` — do Postgres acima (mesmo valor que no `.env` local, formato `postgresql://...`).
    - `JWT_SECRET` — string longa e aleatória.
@@ -124,6 +126,13 @@ Opcional: na raiz do repo existe [`render.yaml`](render.yaml) para criar o servi
 4. Deploy. O [`frontend/vercel.json`](frontend/vercel.json) redireciona rotas do React Router para `index.html`.
 
 Depois do primeiro deploy do front, confira se `CORS_ORIGIN` no Render inclui exatamente a URL do site Vercel que o navegador usa (incluindo `https`).
+
+### Render: `MODULE_NOT_FOUND` em `dist/main`
+
+- Confira nos **logs de build** se `npm run build` terminou com sucesso e se a pasta `dist/` foi gerada.
+- **Settings → Root Directory** = `backend` (mesmo nível que `frontend` no repositório deste MVP).
+- Se você definiu `NODE_ENV=production` nas variáveis de ambiente, use o `npm install --include=dev` do passo 3 ou remova `NODE_ENV` do painel até o build estabilizar.
+- O caminho `/opt/render/project/src/backend/...` é o layout interno do Render (equivale à pasta `backend` do repo). O erro real costuma ser **`node dist/main` quando o Nest emitiu `dist/src/main.js`** — o `tsconfig.build.json` deste projeto foi ajustado para gerar **`dist/main.js`**. Não commite a pasta `backend/dist` no Git (ela está no `.gitignore`); se já subiu, remova do repositório (`git rm -r --cached backend/dist`) para o build de CI ser a fonte da verdade.
 
 ## Documentação do produto
 
